@@ -30,7 +30,7 @@ class World {
     const n = this.selectionOffset;
     const totalFitness = this.population.reduce((a, v) => a + v.fitness + n, 0);
 
-    let f = floor(rand() * totalFitness);
+    let f = ~~(rand() * totalFitness);
     let i = 0;
     while (f > 0) {
       f -= this.population[i].fitness + n;

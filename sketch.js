@@ -1,28 +1,15 @@
-function findWord(target) {
-  return function (cell) {
-    const dna = cell.dna;
-
-    const matches = dna.reduce((acc, val, i) => acc + (val === target[i]), 0);
-
-    return matches;
-  };
-}
-
-function foundWord(world) {
-  return world.population.some((cell) => cell.dna.join("") === target);
-}
-
 const genePool =
   "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890!@#$%^&*()`-=[]\\;',./~_+{}|:\"<>? ";
-const target = "News Night With Will McAvoy";
+const target = "We hold these truths to be self-evident...";
 const geneCount = target.length;
+const options = { mutationRate: 0.003, popCount: 125 };
+const margin = 50;
+const padding = 5;
+const graphOffset = 3 / 4;
 
 let world;
 let history;
-const margin = 50;
-const padding = 5;
-
-const options = { mutationRate: 0.01, popCount: 100 };
+let timer;
 
 const resizeText = () => {
   textSize((height - margin * 2) / 15);
@@ -31,49 +18,38 @@ const resizeText = () => {
     textSize(textSize() - 1);
 };
 
+const textPos = (n) => [margin, margin + n * textSize() + (n - 1) * padding];
+
+function matchesWord(target) {
+  return (cell) =>
+    cell.dna.reduce((acc, val, i) => acc + (val === target[i]), 0);
+}
+
+const foundWord = (w) =>
+  w.population.some((cell) => cell.dna.join("") === target);
+
 const display = {
-  text: () => {
-    text(`Target: ${target}`, margin, margin + textSize());
-    text(
-      `Guess:  ${world.fittest.dna.join("")}`,
-      margin,
-      margin + 2 * textSize() + padding
-    );
-    text(
-      `Mutation Rate: ${world.mutationRate * 100}%`,
-      margin,
-      margin + 4 * textSize() + 2 * padding
-    );
-    text(
-      `Population size: ${world.popCount}`,
-      margin,
-      margin + 5 * textSize() + 3 * padding
-    );
-    text(
-      `Current fitness: ${floor(
-        (world.fittest.fitness * 100) / target.length
-      )}%`,
-      margin,
-      margin + 6 * textSize() + 4 * padding
-    );
-    text(
-      `Generation count: ${world.generation}`,
-      margin,
-      margin + 7 * textSize() + 5 * padding
-    );
+  status: () => {
+    const progress = ~~((world.fittest.fitness * 100) / target.length);
+
+    text(`Target: ${target}`, ...textPos(1));
+    text(`Guess:  ${world.fittest.dna.join("")}`, ...textPos(2));
+    text(`Mutation Rate: ${world.mutationRate * 100}%`, ...textPos(4));
+    text(`Population size: ${world.popCount}`, ...textPos(5));
+    text(`Current fitness: ${progress}%`, ...textPos(6));
+    text(`Generation count: ${world.generation}`, ...textPos(7));
+    text(`Elapsed time: ${timer.time}`, ...textPos(8));
   },
 
   graph: () => {
     stroke(128);
-    line(0, height - 100, width, height - 100);
+    line(0, height * graphOffset, width, height * graphOffset);
     stroke("white");
     history.slice(1).forEach((progress, i) => {
-      line(
-        i,
-        map(progress, 0, 1, height, height - 100),
-        i - 1,
-        map(history[i - 1], 0, 1, height, height - 100)
-      );
+      const p0 = map(history[i - 1], 0, 1, height, height * graphOffset);
+      const p1 = map(progress, 0, 1, height, height * graphOffset);
+
+      line(i - 1, p0, i, p1);
     });
   },
 };
@@ -90,14 +66,14 @@ function setup() {
   textFont("Courier");
   resizeText();
 
-  world = new World(geneCount, genePool, findWord(target), options);
+  world = new World(geneCount, genePool, matchesWord(target), options);
   history = Array(width).fill();
+  timer = new Timer();
 }
 
 function draw() {
   if (foundWord(world)) {
     noLoop();
-    console.log(world.generation);
   } else {
     world.next();
     history.push(world.fittest.fitness / target.length);
@@ -107,6 +83,6 @@ function draw() {
   while (history.length < width) history.unshift(null);
 
   background(20);
-  display.text();
+  display.status();
   display.graph();
 }
