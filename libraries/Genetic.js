@@ -74,10 +74,12 @@ class Cell {
     }
   }
 
+  // Selection
   get fitness() {
     return this.world.fitness(this);
   }
 
+  // Variance
   mutate() {
     this.dna = this.dna.map((_, i) =>
       rand() < this.world.mutationRate ? this.world.randomGene() : this.dna[i]
@@ -86,6 +88,7 @@ class Cell {
     return this;
   }
 
+  // Heredity
   breed(partner) {
     const newDNA = this.dna.map((v, i) => (rand() < 0.5 ? v : partner.dna[i]));
 
