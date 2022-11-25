@@ -28,15 +28,13 @@ function displayTime(t) {
 class Timer {
   constructor() {
     this.start = new Date();
-    this.timeSpentPaused = 0;
-    this.pauseStart = 0;
   }
 
   get time() {
-    return displayTime(new Date() - this.start - this.timeSpentPaused);
+    return displayTime(new Date() - this.start);
   }
 
   stop() {
-    console.log(displayTime(new Date() - this.start - this.timeSpentPaused));
+    console.log(displayTime(new Date() - this.start));
   }
 }

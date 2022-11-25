@@ -4,7 +4,7 @@ class World {
     geneCount,
     genePool,
     fitnessFunction,
-    { popCount = 10, selectionOffset = 1, mutationRate = 0.01 } = {}
+    { popCount = 100, selectionOffset = 1, mutationRate = 0.01 } = {}
   ) {
     this.geneCount = geneCount;
     this.genePool = genePool;
@@ -28,12 +28,15 @@ class World {
 
   randomCell() {
     const n = this.selectionOffset;
-    const totalFitness = this.population.reduce((a, v) => a + v.fitness + n, 0);
+    const totalFitness = this.population.reduce(
+      (a, v) => a + v.fitness ** 2 + n,
+      0
+    );
 
     let f = ~~(rand() * totalFitness);
     let i = 0;
     while (f > 0) {
-      f -= this.population[i].fitness + n;
+      f -= this.population[i].fitness ** 2 + n;
       if (f < 0) break;
       i++;
     }
@@ -74,12 +77,10 @@ class Cell {
     }
   }
 
-  // Selection
   get fitness() {
     return this.world.fitness(this);
   }
 
-  // Variance
   mutate() {
     this.dna = this.dna.map((_, i) =>
       rand() < this.world.mutationRate ? this.world.randomGene() : this.dna[i]
@@ -88,7 +89,6 @@ class Cell {
     return this;
   }
 
-  // Heredity
   breed(partner) {
     const newDNA = this.dna.map((v, i) => (rand() < 0.5 ? v : partner.dna[i]));
 

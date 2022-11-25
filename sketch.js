@@ -1,8 +1,8 @@
 const genePool =
   "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890!@#$%^&*()`-=[]\\;',./~_+{}|:\"<>? ";
-const target = "We hold these truths to be self-evident...";
+const target = "When in the course of human events it becomes necessary...";
 const geneCount = target.length;
-const options = { mutationRate: 0.003, popCount: 125 };
+const options = { mutationRate: 0.003, popCount: 200 };
 const margin = 50;
 const padding = 5;
 const graphOffset = 3 / 4;
