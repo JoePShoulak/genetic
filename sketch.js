@@ -2,7 +2,7 @@ const genePool =
   "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890!@#$%^&*()`-=[]\\;',./~_+{}|:\"<>? ";
 const target = "When in the course of human events it becomes necessary...";
 const geneCount = target.length;
-const options = { mutationRate: 0.003, popCount: 200 };
+const options = { mutationRate: 0.003, popCount: 175 };
 const margin = 50;
 const padding = 5;
 const graphOffset = 3 / 4;
@@ -31,6 +31,7 @@ const foundWord = (w) =>
 const display = {
   status: () => {
     const progress = ~~((world.fittest.fitness * 100) / target.length);
+    const calcRate = ~~((world.popCount * world.generation) / timer.seconds);
 
     text(`Target: ${target}`, ...textPos(1));
     text(`Guess:  ${world.fittest.dna.join("")}`, ...textPos(2));
@@ -38,13 +39,15 @@ const display = {
     text(`Population size: ${world.popCount}`, ...textPos(5));
     text(`Current fitness: ${progress}%`, ...textPos(6));
     text(`Generation count: ${world.generation}`, ...textPos(7));
-    text(`Elapsed time: ${timer.time}`, ...textPos(8));
+    text(`Elapsed time: ${timer.formatted}`, ...textPos(8));
+    text(`Guesses per second: ${calcRate}`, ...textPos(9));
   },
 
   graph: () => {
     stroke(128);
     line(0, height * graphOffset, width, height * graphOffset);
     stroke("white");
+
     history.slice(1).forEach((progress, i) => {
       const p0 = map(history[i - 1], 0, 1, height, height * graphOffset);
       const p1 = map(progress, 0, 1, height, height * graphOffset);

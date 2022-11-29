@@ -30,11 +30,19 @@ class Timer {
     this.start = new Date();
   }
 
+  get formatted() {
+    return displayTime(this.time);
+  }
+
   get time() {
-    return displayTime(new Date() - this.start);
+    return new Date() - this.start;
+  }
+
+  get seconds() {
+    return this.time / 1000;
   }
 
   stop() {
-    console.log(displayTime(new Date() - this.start));
+    console.log(displayTime(this.time));
   }
 }
