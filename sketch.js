@@ -1,8 +1,8 @@
 const genePool =
   "QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnm1234567890!@#$%^&*()`-=[]\\;',./~_+{}|:\"<>? ";
-const target = "When in the course of human events it becomes necessary...";
+const target = "Bootcamp is over";
 const geneCount = target.length;
-const options = { mutationRate: 0.003, popCount: 175 };
+const options = { mutationRate: 0.01, popCount: 25 };
 const margin = 50;
 const padding = 5;
 const graphOffset = 3 / 4;
